@@ -6,14 +6,14 @@ app = Flask(__name__)
 @app.route('/')
 @app.route('/index')
 def index():
-    user = "Ученик Яндекс.Лицея"
+    user = "Пользователь"
     if request.method == 'GET':
-        return render_template('index.html', title='Домашняя страница', 
+        return render_template('index.html', title='Главная страница', 
                            username=user)
     
 @app.route('/register_form', methods=['POST', 'GET'])
 def register_form():
-    user = "Ученик Яндекс.Лицея"
+    user = "Пользователь"
     if request.method == 'GET':
         return render_template('register_form.html', title='Домашняя страница', 
                            username=user)
@@ -22,6 +22,13 @@ def register_form():
         print(request.form['password'])
         print(request.form['passwordcheck'])
         return "Форма отправлена"
+    
+@app.route('/main_window')
+def main_window():
+    user = "Пользователь"
+    if request.method == 'GET':
+        return render_template('main_window.html', title='Главная страница', 
+                           username=user)
 
 if __name__ == '__main__':
-    app.run(port=8080, host='127.0.0.1')
+    app.run(port=8081, host='127.0.0.1')
