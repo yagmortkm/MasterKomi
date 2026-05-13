@@ -1,7 +1,32 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>Привет, {{ username }}!</h1>
-    <p>Здесь будут отображаться мастер-классы</p>
+<h1>Мастер-классы</h1>
+{% for item in masterclasses %}
+<div class="col-md6 border rounded mb-3 p-3">
+    <h2>{{ item.name }}</h2>
+    <div>{{ item.date|fmt_date }}</div>
+    <div>{{ item.time }}</div>
+    <div>{{ item.location }}</div>
+    <div>{{ item.description }}</div>
+    {% if item.price is not none %}
+    <div>Цена: {{ item.price }}</div>
+    {% endif %}
+    <div class="mt-2">
+        {% if not user_id %}
+            <a href="{{ url_for('login') }}" class="btn btn-outline-primary btn-sm">Войдите, чтобы записаться</a>
+        {% elif item.user_id == user_id %}
+            <span class="text-muted">Это ваше мероприятие</span>
+        {% elif item.id in signed_event_ids %}
+            <span class="text-success">Вы записаны</span>
+        {% else %}
+            <form method="post" action="{{ url_for('signup_event', event_id=item.id) }}" class="d-inline">
+                {% set sf = signup_forms_by_id[item.id] %}
+                {{ sf.hidden_tag() }}
+                {{ sf.submit(class="btn btn-primary btn-sm") }}
+            </form>
+        {% endif %}
+    </div>
+</div>
+{% endfor %}
 {% endblock %}
-        

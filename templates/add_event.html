@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% if message %}
+    <div class="alert alert-danger">
+        {{ message }}
+    </div>
+{% endif %}
+<h1>Добавить мастер-класс</h1>
+<form action="" method="post" novalidate>
+    {{ form.hidden_tag() }}
+    {% for field in [form.name, form.date, form.time, form.location, form.description, form.price] %}
+    <p>
+        {{ field.label }}<br>
+        {{ field(class="form-control") }}<br>
+        {% for error in field.errors %}
+        <div class="alert alert-danger" role="alert">{{ error }}</div>
+        {% endfor %}
+    </p>
+    {% endfor %}
+    <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
+</form>
+{% endblock %}

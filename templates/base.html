@@ -15,9 +15,9 @@
     <nav class="navbar navbar-light bg-light">
         <a class="navbar-brand" href="/index">Главная</a>
         <a class="navbar-brand" href="/masterclasses">Мастер-классы</a>
-        <!-- <a class="navbar-brand" href="/calendar">Календарь</a>
+        <a class="navbar-brand" href="/add_event">Добавить событие</a>
         <a class="navbar-brand" href="/profile">Профиль</a>
-        <a class="navbar-brand" href="/logout">Выход</a> -->
+        <a class="navbar-brand" href="/logout">Выход</a>
     </nav>
     <nav class="navbar navbar-dark bg-dark">
         <a class="navbar-brand" href="/login">Авторизация</a>
@@ -26,6 +26,13 @@
 </header>
 
 <main role="main" class="container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, msg in messages %}
+            <div class="alert alert-{{ category if category in ['primary', 'secondary', 'success', 'danger', 'warning', 'info', 'light', 'dark'] else 'info' }}" role="alert">{{ msg }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
     {% block content %}{% endblock %}
 </main>
 </body>

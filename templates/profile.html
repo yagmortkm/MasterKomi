@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Профиль</h1>
+<div class="card mb-4">
+    <div class="card-body">
+        <p class="mb-1"><strong>Логин:</strong> {{ user.name or '—' }}</p>
+        <p class="mb-0"><strong>Email:</strong> {{ user.email or '—' }}</p>
+    </div>
+</div>
+
+<h2 class="h4">Мои записи</h2>
+{% if my_signups %}
+    {% for s in my_signups %}
+    <div class="border rounded mb-3 p-3">
+        <h3 class="h5">{{ s.event.name }}</h3>
+        <div>{{ s.event.date|fmt_date }}</div>
+        <div>{{ s.event.time }}</div>
+        <div>{{ s.event.location }}</div>
+        <form method="post" action="{{ url_for('cancel_signup', event_id=s.event.id) }}" class="mt-2">
+            {{ cancel_signup_forms[s.event_id].hidden_tag() }}
+            <button type="submit" class="btn btn-sm btn-outline-danger">Отменить запись</button>
+        </form>
+    </div>
+    {% endfor %}
+{% else %}
+    <p class="text-muted mb-4">Вы пока ни на что не записаны. Посмотрите <a href="{{ url_for('masterclasses') }}">мастер-классы</a>.</p>
+{% endif %}
+
+<h2 class="h4">Мои мастер-классы</h2>
+{% if my_events %}
+    {% for item in my_events %}
+    <div class="border rounded mb-3 p-3">
+        <h3 class="h5">{{ item.name }}</h3>
+        <div>{{ item.date|fmt_date }}</div>
+        <div>{{ item.time }}</div>
+        <div>{{ item.location }}</div>
+        <div>{{ item.description }}</div>
+        {% if item.price is not none %}
+        <div>Цена: {{ item.price }}</div>
+        {% endif %}
+    </div>
+    {% endfor %}
+{% else %}
+    <p class="text-muted">Вы ещё не добавляли мастер-классы. <a href="{{ url_for('add_event') }}">Добавить</a></p>
+{% endif %}
+{% endblock %}
