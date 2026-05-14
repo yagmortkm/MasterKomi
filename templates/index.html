@@ -1,7 +1,50 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>Привет, {{ username }}!</h1>
-    <a href="/registration" class="button">Зарегестрироваться</a>
+<section class="welcome">
+    <div class="welcome-text">
+        <h1 class="display-5 mb-3">Привет, {{ username }}!</h1>
+        <p class="lead">Платформа мастер-классов: смотрите расписание, записывайтесь или предложите своё мероприятие.</p>
+    </div>
+    <div class="welcome-actions">
+        <a href="{{ url_for('masterclasses') }}" class="btn btn-light btn-lg me-2 mb-2 mb-lg-0">Мастер-классы</a>
+        {% if not session.get('user_id') %}
+        <a href="{{ url_for('registration') }}" class="btn btn-outline-light btn-lg mb-2 mb-lg-0">Зарегистрироваться</a>
+        {% else %}
+        <a href="{{ url_for('profile') }}" class="btn btn-outline-light btn-lg">Профиль</a>
+        {% endif %}
+    </div>
+</section>
+
+<section class="tiles">
+    <article class="card tile-card">
+        <div class="card-body">
+            <h2 class="h5 card-title">Каталог</h2>
+            <p class="card-text muted small">Фильтр по направлениям: IT, искусство, спорт и другое.</p>
+            <a href="{{ url_for('masterclasses') }}" class="stretched-link text-decoration-none">Открыть →</a>
+        </div>
+    </article>
+    <article class="card tile-card">
+        <div class="card-body">
+            <h2 class="h5 card-title">Для организаторов</h2>
+            <p class="card-text muted small">Войдите и добавьте мастер-класс с датой, местом и ценой.</p>
+            {% if session.get('user_id') %}
+            <a href="{{ url_for('add_event') }}" class="stretched-link text-decoration-none">Добавить →</a>
+            {% else %}
+            <a href="{{ url_for('login') }}" class="stretched-link text-decoration-none">Войти →</a>
+            {% endif %}
+        </div>
+    </article>
+    <article class="card tile-card">
+        <div class="card-body">
+            <h2 class="h5 card-title">Записи</h2>
+            <p class="card-text muted small">Все ваши записи и созданные события — в профиле.</p>
+            {% if session.get('user_id') %}
+            <a href="{{ url_for('profile') }}" class="stretched-link text-decoration-none">Профиль →</a>
+            {% else %}
+            <a href="{{ url_for('registration') }}" class="stretched-link text-decoration-none">Создать аккаунт →</a>
+            {% endif %}
+        </div>
+    </article>
+</section>
 {% endblock %}
-        

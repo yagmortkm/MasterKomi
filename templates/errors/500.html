@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="error-screen">
+    <h1 class="display-4 text-danger">500</h1>
+    <p class="lead">Внутренняя ошибка сервера. Мы уже знаем о проблеме.</p>
+    <a class="btn btn-primary" href="{{ url_for('index') }}">На главную</a>
+</div>
+{% endblock %}

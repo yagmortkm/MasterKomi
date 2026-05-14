@@ -1,23 +1,31 @@
 {% extends "base.html" %}
 
 {% block content %}
-{% if message %}
-    <div class="alert alert-danger">
-        {{ message }}
+<div class="form-shell roomy">
+    <div class="card form-panel">
+        <div class="card-body form-inner roomy">
+            <h1 class="h3 mb-2">Новый мастер-класс</h1>
+            <p class="muted small mb-4">Дата в формате <code>ГГГГ-ММ-ДД</code>, например <code>2026-05-14</code>.</p>
+            {% if message %}
+            <div class="alert alert-danger">{{ message }}</div>
+            {% endif %}
+            <form action="" method="post" novalidate>
+                {{ form.hidden_tag() }}
+                {% for field in [form.name, form.direction, form.date, form.time, form.location, form.description, form.price] %}
+                <div class="field">
+                    {{ field.label(class="form-label") }}
+                    {{ field(class="form-control") }}
+                    {% for error in field.errors %}
+                    <div class="field-error">{{ error }}</div>
+                    {% endfor %}
+                </div>
+                {% endfor %}
+                <div class="actions-line">
+                    {{ form.submit(class="btn btn-primary") }}
+                    <a href="{{ url_for('masterclasses') }}" class="btn btn-outline-secondary">Отмена</a>
+                </div>
+            </form>
+        </div>
     </div>
-{% endif %}
-<h1>Добавить мастер-класс</h1>
-<form action="" method="post" novalidate>
-    {{ form.hidden_tag() }}
-    {% for field in [form.name, form.date, form.time, form.location, form.description, form.price] %}
-    <p>
-        {{ field.label }}<br>
-        {{ field(class="form-control") }}<br>
-        {% for error in field.errors %}
-        <div class="alert alert-danger" role="alert">{{ error }}</div>
-        {% endfor %}
-    </p>
-    {% endfor %}
-    <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
-</form>
+</div>
 {% endblock %}

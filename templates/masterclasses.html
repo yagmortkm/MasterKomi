@@ -1,32 +1,61 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>Мастер-классы</h1>
-{% for item in masterclasses %}
-<div class="col-md6 border rounded mb-3 p-3">
-    <h2>{{ item.name }}</h2>
-    <div>{{ item.date|fmt_date }}</div>
-    <div>{{ item.time }}</div>
-    <div>{{ item.location }}</div>
-    <div>{{ item.description }}</div>
-    {% if item.price is not none %}
-    <div>Цена: {{ item.price }}</div>
-    {% endif %}
-    <div class="mt-2">
-        {% if not user_id %}
-            <a href="{{ url_for('login') }}" class="btn btn-outline-primary btn-sm">Войдите, чтобы записаться</a>
-        {% elif item.user_id == user_id %}
-            <span class="text-muted">Это ваше мероприятие</span>
-        {% elif item.id in signed_event_ids %}
-            <span class="text-success">Вы записаны</span>
-        {% else %}
-            <form method="post" action="{{ url_for('signup_event', event_id=item.id) }}" class="d-inline">
-                {% set sf = signup_forms_by_id[item.id] %}
-                {{ sf.hidden_tag() }}
-                {{ sf.submit(class="btn btn-primary btn-sm") }}
-            </form>
-        {% endif %}
-    </div>
+<header class="page-title">
+    <h1 class="h2">Мастер-классы</h1>
+    <p>Выберите направление или смотрите все события.</p>
+</header>
+
+<p class="filter-note">Направление</p>
+<div class="filters btn-group flex-wrap" role="group" aria-label="Фильтр по направлению">
+    <a href="{{ url_for('masterclasses') }}" class="btn btn-sm {% if not filter_direction %}btn-primary{% else %}btn-outline-secondary{% endif %}">Все</a>
+    {% for value, label in event_directions %}
+    <a href="{{ url_for('masterclasses', direction=value) }}" class="btn btn-sm {% if filter_direction == value %}btn-primary{% else %}btn-outline-secondary{% endif %}">{{ label }}</a>
+    {% endfor %}
 </div>
-{% endfor %}
+
+{% if not masterclasses %}
+<div class="alert alert-light border empty-hint">
+    {% if filter_direction %}В этом направлении пока нет мастер-классов.{% else %}Пока нет мастер-классов — станьте первым организатором.{% endif %}
+</div>
+{% endif %}
+
+<div class="event-grid">
+    {% for item in masterclasses %}
+    <article class="card event-card">
+        <div class="card-body">
+            <div class="event-head">
+                <h2 class="h5 card-title mb-0">{{ item.name }}</h2>
+                {% if item.direction %}
+                <span class="badge text-bg-info text-wrap">{{ direction_labels.get(item.direction, item.direction) }}</span>
+                {% endif %}
+            </div>
+            <ul class="event-details small">
+                <li><strong>Дата:</strong> {{ item.date|fmt_date }}</li>
+                <li><strong>Время:</strong> {{ item.time }}</li>
+                <li><strong>Место:</strong> {{ item.location }}</li>
+                {% if item.price is not none %}
+                <li><strong>Цена:</strong> {{ item.price }}</li>
+                {% endif %}
+            </ul>
+            <p class="card-text small flex-grow-1">{{ item.description }}</p>
+            <div class="event-foot">
+                {% if not user_id %}
+                <a href="{{ url_for('login') }}" class="btn btn-outline-primary btn-sm">Войдите, чтобы записаться</a>
+                {% elif item.user_id == user_id %}
+                <span class="muted small">Это ваше мероприятие</span>
+                {% elif item.id in signed_event_ids %}
+                <span class="badge text-bg-success">Вы записаны</span>
+                {% else %}
+                <form method="post" action="{{ url_for('signup_event', event_id=item.id) }}" class="d-inline">
+                    {% set sf = signup_forms_by_id[item.id] %}
+                    {{ sf.hidden_tag() }}
+                    {{ sf.submit(class="btn btn-primary btn-sm") }}
+                </form>
+                {% endif %}
+            </div>
+        </div>
+    </article>
+    {% endfor %}
+</div>
 {% endblock %}

@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="error-screen">
+    <h1 class="display-4 text-primary">403</h1>
+    <p class="lead">Доступ запрещён.</p>
+    <a class="btn btn-outline-primary" href="{{ url_for('index') }}">На главную</a>
+</div>
+{% endblock %}
